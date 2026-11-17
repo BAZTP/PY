@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministerio de Gobierno | El Nuevo Ecuador - Gestión Documental y Asistente IA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Barlow Condensed para tipografía institucional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700;1,800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Librerías CDN ligeras para lectura nativa de Word (.docx) y Excel (.xlsx/.xls) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        condensed: ['"Barlow Condensed"', 'sans-serif'],
+                    },
+                    colors: {
+                        gob: {
+                            navy: '#262262',      // Azul marino institucional oficial El Nuevo Ecuador
+                            dark: '#181542',      // Azul profundo hover
+                            yellow: '#FCD116',    // Amarillo bandera oficial
+                            red: '#ED1C24',       // Rojo bandera oficial
+                            light: '#F4F6F9',     // Fondo institucional limpio
+                            border: '#DCE3EC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .tricolor-stripe {
+            background: linear-gradient(90deg, #FCD116 0%, #FCD116 45%, #262262 45%, #262262 75%, #ED1C24 75%, #ED1C24 100%);
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.18); }
+        }
+        .animate-pulse-dot { animation: pulse-dot 2s infinite ease-in-out; }
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gob-light text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-gob-navy selection:text-white">
+
+    <!-- ENCABEZADO BLANCO LIMPIO CON LOGOTIPO OFICIAL EXACTO Y LÍNEA INFERIOR TRICOLOR -->
+    <header class="bg-white sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                
+                <!-- Izquierda: Logotipo Oficial "EL NUEVO ECUADOR - Ministerio de Gobierno" -->
+                <div class="flex items-center justify-between">
+                    <div onclick="openApiModal('logo')" title="Clic para personalizar o cargar archivo PNG/SVG del logotipo oficial" class="cursor-pointer group flex items-center select-none">
+                        <!-- Contenedor para PNG/SVG personalizado si el usuario sube su imagen -->
+                        <img id="customLogoImg" src="" alt="Ministerio de Gobierno - El Nuevo Ecuador" class="hidden h-16 sm:h-[74px] w-auto object-contain">
+                        
+                        <!-- SVG Vectorial Oficial de Ultra Alta Fidelidad -->
+                        <svg id="officialVectorLogo" class="h-16 sm:h-[76px] w-auto" viewBox="0 0 365 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="El Nuevo Ecuador - Ministerio de Gobierno">
+                            <!-- ================= 1. ESCUDO NACIONAL DEL ECUADOR (IZQUIERDA) ================= -->
+                            <g transform="translate(8, 5)">
+                                <!-- Cóndor Andino con alas desplegadas en café oscuro -->
+                                <path d="M44 13C35 6 20 5 8 10C15 11 21 13 26 16C20 15 15 16 12 18C19 18 26 19 32 21L44 17Z" fill="#4A2E1B"/>
+                                <path d="M44 13C53 6 68 5 80 10C73 11 67 13 62 16C68 15 73 16 76 18C69 18 62 19 56 21L44 17Z" fill="#4A2E1B"/>
+                                <!-- Cabeza, pico dorado y collarín blanco del cóndor -->
+                                <path d="M41 13C41 9.5 46.5 9.5 47.5 12.5C48.5 13 49.5 13.8 48.2 14.8C46.5 15.2 44.5 15 41 13Z" fill="#4A2E1B"/>
+                                <path d="M47.3 12.3L50 13.4L47.5 14.5Z" fill="#E5A93B"/>
+                                <ellipse cx="44" cy="16.2" rx="4.2" ry="1.8" fill="#FFFFFF" stroke="#4A2E1B" stroke-width="0.6"/>
+
+                                <!-- Puntas de lanzas y astas inclinadas -->
+                                <line x1="20" y1="22" x2="66" y2="74" stroke="#8C6239" stroke-width="1.6"/>
+                                <line x1="68" y1="22" x2="22" y2="74" stroke="#8C6239" stroke-width="1.6"/>
+                                <line x1="15" y1="30" x2="62" y2="74" stroke="#8C6239" stroke-width="1.5"/>
+                                <line x1="73" y1="30" x2="26" y2="74" stroke="#8C6239" stroke-width="1.5"/>
+                                <!-- Puntas metálicas de alabarda -->
+                                <polygon points="18,20 22,21 20,24" fill="#94A3B8"/>
+                                <polygon points="70,20 66,21 68,24" fill="#94A3B8"/>
+                                <polygon points="13,28 17,29 15,32" fill="#94A3B8"/>
+                                <polygon points="75,28 71,29 73,32" fill="#94A3B8"/>
+
+                                <!-- Banderas tricolores drapeadas a los costados -->
+                                <!-- Izquierda exterior -->
+                                <path d="M22 25C16 32 14 45 18 59L23 56C20 45 21 34 25 27Z" fill="#FCD116"/>
+                                <path d="M25 27C21 34 20 45 23 56L26 54C24 44 24 35 27 29Z" fill="#0033A0"/>
+                                <path d="M27 29C24 35 24 44 26 54L28 53C26 44 26 36 28 31Z" fill="#ED1C24"/>
+                                <!-- Derecha exterior -->
+                                <path d="M66 25C72 32 74 45 70 59L65 56C68 45 67 34 63 27Z" fill="#FCD116"/>
+                                <path d="M63 27C67 34 68 45 65 56L62 54C64 44 64 35 61 29Z" fill="#0033A0"/>
+                                <path d="M61 29C64 35 64 44 62 54L60 53C62 44 62 36 60 31Z" fill="#ED1C24"/>
+
+                                <!-- Faldón tricolor inferior -->
+                                <path d="M21 58C25 66 33 70 44 71C55 70 63 66 67 58L62 55C58 61 52 64 44 65C36 64 30 61 26 55Z" fill="#FCD116"/>
+                                <path d="M26 55C30 61 36 64 44 65C52 64 58 61 62 55L59 53C55 58 50 61 44 62C38 61 33 58 29 53Z" fill="#0033A0"/>
+                                <path d="M37 68L35 76L41 74L44 77L47 74L53 76L51 68Z" fill="#ED1C24"/>
+
+                                <!-- Hojas de Palma (izquierda) y Laurel (derecha) -->
+                                <path d="M26 56C20 50 18 40 21 30" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M62 56C68 50 70 40 67 30" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+
+                                <!-- Óvalo Central del Escudo -->
+                                <ellipse cx="44" cy="41" rx="16.5" ry="21" fill="#87CEEB" stroke="#D4AF37" stroke-width="2.4"/>
+                                <!-- Clip interior del óvalo -->
+                                <clipPath id="shieldOvalClip">
+                                    <ellipse cx="44" cy="41" rx="15.2" ry="19.6"/>
+                                </clipPath>
+                                <g clip-path="url(#shieldOvalClip)">
+                                    <!-- Cielo celeste superior -->
+                                    <rect x="27" y="20" width="34" height="22" fill="#9BD7F3"/>
+                                    <!-- Sol Dorado Radiante y signos zodiacales -->
+                                    <circle cx="44" cy="27.5" r="3.4" fill="#FCD116" stroke="#E09F1F" stroke-width="0.6"/>
+                                    <path d="M36 27.5H39M49 27.5H52M44 21.5V23.2M38.5 23.5L40 24.8M49.5 23.5L48 24.8" stroke="#FCD116" stroke-width="1" stroke-linecap="round"/>
+                                    <!-- Volcán Chimborazo nevado (izquierda) -->
+                                    <path d="M26 42L36.5 29.5L46 42H26Z" fill="#6D5D53"/>
+                                    <path d="M36.5 29.5L32.8 34.2L35 34.8L36.5 33.4L38.2 35L40.3 34.1L36.5 29.5Z" fill="#FFFFFF"/>
+                                    <!-- Colina verde derecha -->
+                                    <path d="M42 42L52 34L61 42H42Z" fill="#4E8B45"/>
+                                    <!-- Río Guayas azul verdoso -->
+                                    <path d="M27 42H61V62H27V42Z" fill="#3B8EA5"/>
+                                    <path d="M33 42C38 45 45 48 41 53C38 56 44 59 50 61H61V42H33Z" fill="#5FA354"/>
+                                    <!-- Buque a vapor Guayas -->
+                                    <path d="M40 48.5H51L49.5 51H41.5L40 48.5Z" fill="#4A2E1B"/>
+                                    <rect x="44.5" y="45.8" width="1.6" height="2.7" fill="#334155"/>
+                                    <path d="M45.3 45.5C46.5 44.3 48.5 44.5 50 44.2" stroke="#E2E8F0" stroke-width="1" stroke-linecap="round"/>
+                                    <line x1="45.5" y1="48.5" x2="45.5" y2="51.2" stroke="#D4AF37" stroke-width="0.9"/>
+                                </g>
+
+                                <!-- Fasces Consulares horizontales en la base -->
+                                <rect x="33" y="64.5" width="22" height="3.2" rx="1.2" fill="#B8860B" stroke="#5C4008" stroke-width="0.6"/>
+                                <path d="M31 63.5L34 65V67.2L31 68.7Z" fill="#94A3B8"/>
+                            </g>
+
+                            <!-- ================= 2. TIPOGRAFÍA "EL NUEVO ECUADOR" (CENTRO) ================= -->
+                            <g fill="#262262">
+                                <!-- "EL NUEVO" alineado sobre la mitad derecha de ECUADOR -->
+                                <text x="268" y="34" text-anchor="end" font-family="'Barlow Condensed', 'Arial Narrow', sans-serif" font-weight="700" font-style="italic" font-size="22" letter-spacing="0.4">EL NUEVO</text>
+                                <!-- "ECUADOR" grande condensado en cursiva -->
+                                <text x="108" y="69" font-family="'Barlow Condensed', 'Arial Narrow', sans-serif" font-weight="800" font-style="italic" font-size="45" letter-spacing="-0.5">ECUADOR</text>
+                            </g>
+
+                            <!-- ================= 3. TRES FRANJAS INCLINADAS TRICOLOR CON BORDES SUPERIORES REDONDEADOS ================= -->
+                            <g transform="translate(274, 15)">
+                                <!-- Franja Amarilla -->
+                                <path d="M13 3C13.3 1.3 14.8 0 16.5 0H23.5C25.3 0 26.6 1.6 26.2 3.4L14.5 55H1.5L13 3Z" fill="#FCD116"/>
+                                <!-- Franja Azul Marino -->
+                                <path d="M33 3C33.3 1.3 34.8 0 36.5 0H43.5C45.3 0 46.6 1.6 46.2 3.4L34.5 55H21.5L33 3Z" fill="#262262"/>
+                                <!-- Franja Roja -->
+                                <path d="M53 3C53.3 1.3 54.8 0 56.5 0H63.5C65.3 0 66.6 1.6 66.2 3.4L54.5 55H41.5L53 3Z" fill="#ED1C24"/>
+                            </g>
+
+                            <!-- ================= 4. TEXTO INFERIOR CENTRADO "Ministerio de Gobierno" ================= -->
+                            <text x="182.5" y="102" text-anchor="middle" fill="#262262" font-family="'Barlow Condensed', 'Inter', sans-serif" font-weight="600" font-size="22" letter-spacing="0.3">Ministerio de Gobierno</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Derecha: Estado Gemini API + Configurar API + Descargar HTML + Perfil Usuario (Sin Login) -->
+                <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 border-t lg:border-t-0 border-slate-100 pt-2.5 lg:pt-0">
+                    
+                    <!-- Indicador de Estado de Conexión Google Gemini -->
+                    <div id="headerGeminiStatus" onclick="openApiModal('gemini')" class="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition" title="Estado de Google Gemini API">
+                        <span id="headerGeminiDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        <span id="headerGeminiText" class="font-medium text-slate-700">API No Configurada</span>
+                    </div>
+
+                    <!-- Botón Configurar API -->
+                    <button onclick="openApiModal('gemini')" class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gob-navy hover:bg-gob-dark text-white text-xs font-semibold shadow-xs transition">
+                        <i class="fa-solid fa-key text-gob-yellow"></i>
+                        <span>Configurar API</span>
+                    </button>
+
+                    <!-- Botón Descargar HTML listo para GitHub -->
+                    <button onclick="downloadStandaloneHtml()" title="Descargar como index.html listo para subir a GitHub" class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white hover:bg-slate-50 text-gob-navy border border-gob-navy/25 text-xs font-semibold shadow-2xs transition">
+                        <i class="fa-brands fa-github text-sm"></i>
+                        <span class="hidden sm:inline">Descargar HTML</span>
+                    </button>
+
+                    <!-- Perfil Directo: Usuario (Sin Login, editable al hacer clic) -->
+                    <button onclick="openApiModal('user')" title="Clic para editar nombre o cargo del usuario" class="flex items-center gap-2.5 bg-slate-50 hover:bg-blue-50/70 px-3 py-1.5 rounded-xl border border-slate-200 transition text-left">
+                        <div class="relative">
+                            <div class="w-8 h-8 rounded-full bg-gob-navy text-white font-bold text-xs flex items-center justify-center shadow-2xs">
+                                <i class="fa-solid fa-user text-gob-yellow"></i>
+                            </div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div class="leading-tight">
+                            <div class="flex items-center gap-1.5">
+                                <span id="displayUserName" class="text-xs font-bold text-gob-navy">Usuario</span>
+                                <i class="fa-solid fa-pen text-[9px] text-slate-400"></i>
+                            </div>
+                            <p id="displayUserRole" class="text-[10px] text-slate-500 font-medium">Sesión Institucional Activa</p>
+                        </div>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <!-- Línea Inferior Tricolor Institucional -->
+        <div class="h-1.5 w-full tricolor-stripe"></div>
+    </header>
+
+    <!-- Barra Secundaria de Contexto Documental -->
+    <div class="bg-gob-navy text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 font-medium text-white">
+                    <i class="fa-solid fa-shield-halved text-gob-yellow"></i>
+                    Repositorio Documental Unificado y Asistencia Inteligente
+                </span>
+                <span class="hidden md:inline text-white/25">|</span>
+                <span id="currentDateDisplay" class="hidden md:inline text-slate-300 text-[11px]"></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-white text-[11px] font-medium border border-white/15">
+                    <i class="fa-solid fa-layer-group text-gob-yellow"></i>
+                    <span id="activeDocsCount">0</span> fuente(s) conectada(s) a Gemini
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL (2 COLUMNAS RESPONSIVAS) -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- COLUMNA IZQUIERDA (5 cols): Repositorio y Unificación Documental -->
+            <section class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-gob-border overflow-hidden flex flex-col">
+                <div class="bg-slate-50 px-5 py-4 border-b border-gob-border flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-gob-navy text-white flex items-center justify-center shadow-2xs">
+                            <i class="fa-solid fa-folder-tree text-sm text-gob-yellow"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-bold text-gob-navy">Repositorio y Unificación Documental</h2>
+                            <p class="text-[11px] text-slate-500">Cargue, combine y consulte múltiples archivos</p>
+                        </div>
+                    </div>
+                    <button onclick="openNoteModal()" class="px-2.5 py-1.5 rounded-lg bg-gob-navy hover:bg-gob-dark text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-2xs">
+                        <i class="fa-solid fa-plus text-gob-yellow"></i>
+                        <span>Pegar Texto / Nota</span>
+                    </button>
+                </div>
+
+                <div class="p-5 space-y-4">
+                    <!-- Zona Drag & Drop Real Multimodal (PDF, DOCX, XLSX, CSV, TXT, MD, JSON, IMG) -->
+                    <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-gob-navy bg-slate-50/70 hover:bg-indigo-50/40 rounded-xl p-5 text-center transition-all cursor-pointer group">
+                        <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.docx,.xlsx,.xls,.csv,.txt,.md,.json,.png,.jpg,.jpeg,.webp">
+                        <div class="w-11 h-11 rounded-full bg-white shadow-xs border border-slate-200 text-gob-navy group-hover:scale-105 group-hover:bg-gob-navy group-hover:text-white transition-all mx-auto flex items-center justify-center mb-2.5">
+                            <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-700 group-hover:text-gob-navy">
+                            Arrastre sus documentos oficiales aquí
+                        </p>
+                        <p class="text-xs text-slate-500 mt-1">
+                            o <span class="text-gob-navy font-semibold underline">seleccione archivos desde su equipo</span>
+                        </p>
+                        <div class="mt-3 flex flex-wrap justify-center gap-1.5">
+                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-white border border-slate-200 text-slate-600 rounded">PDF</span>
+                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-white border border-slate-200 text-slate-600 rounded">DOCX (Word)</span>
+                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-white border border-slate-200 text-slate-600 rounded">XLSX / CSV</span>
+                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-white border border-slate-200 text-slate-600 rounded">TXT / MD / JSON</span>
+                            <span class="px-2 py-0.5 text-[10px] font-semibold bg-white border border-slate-200 text-slate-600 rounded">PNG / JPG / WEBP</span>
+                        </div>
+                    </div>
+
+                    <!-- Barra de Selección y Acción de Unificación -->
+                    <div class="space-y-2.5 pt-1 border-t border-slate-100">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                Documentos (<span id="totalDocsCount">0</span>)
+                            </h3>
+                            <div id="selectionControls" class="hidden flex items-center gap-2 text-xs">
+                                <button type="button" onclick="setSelectionAll(true)" class="font-semibold text-gob-navy hover:underline">Seleccionar todos</button>
+                                <span class="text-slate-300">|</span>
+                                <button type="button" onclick="setSelectionAll(false)" class="font-medium text-slate-500 hover:text-slate-800 hover:underline">Deseleccionar</button>
+                            </div>
+                        </div>
+
+                        <!-- Botón Destacado: Unir Documentos Seleccionados -->
+                        <button type="button" id="btnOpenUnify" onclick="openUnifyModal()" disabled class="w-full py-2.5 px-3.5 rounded-xl bg-gob-navy disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed hover:bg-gob-dark text-white font-semibold text-xs shadow-2xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-object-group text-gob-yellow"></i>
+                            <span id="btnOpenUnifyText">Unir Seleccionados (marque 2 o más)</span>
+                        </button>
+                    </div>
+
+                    <!-- Lista de Documentos Cargados (Inicia en 0 sin datos ficticios) -->
+                    <div id="documentsList" class="space-y-2.5 max-h-[390px] overflow-y-auto pr-1"></div>
+                </div>
+            </section>
+
+            <!-- COLUMNA DERECHA (7 cols): Asistente Inteligente - Ministerio de Gobierno -->
+            <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-gob-border overflow-hidden flex flex-col h-[680px]">
+                
+                <!-- Cabecera del Asistente Gemini -->
+                <div class="bg-gob-navy text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2 border-b border-gob-dark">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center relative">
+                            <i class="fa-solid fa-sparkles text-gob-yellow text-base"></i>
+                            <span id="chatHeaderDot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-gob-navy"></span>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-bold text-white leading-tight">Asistente Inteligente - Ministerio de Gobierno</h2>
+                            <p id="chatSubtitleStatus" class="text-[11px] text-slate-300 mt-0.5">Configure su API Key de Gemini para iniciar consultas</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Selector Rápido de Modelo Gemini -->
+                        <select id="quickModelSelect" onchange="syncQuickModel()" title="Seleccionar modelo Gemini" class="bg-white/10 hover:bg-white/15 text-white text-xs font-medium rounded-lg px-2.5 py-1.5 border border-white/20 outline-none cursor-pointer">
+                            <option value="gemini-2.5-flash" class="text-slate-900">gemini-2.5-flash</option>
+                            <option value="gemini-2.5-pro" class="text-slate-900">gemini-2.5-pro</option>
+                            <option value="gemini-2.0-flash" class="text-slate-900">gemini-2.0-flash</option>
+                        </select>
+
+                        <!-- Exportar Informe / Chat -->
+                        <button onclick="exportChatReport()" title="Exportar conversación e informe en formato texto" class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-export text-gob-yellow"></i>
+                            <span class="hidden sm:inline">Exportar</span>
+                        </button>
+
+                        <button onclick="clearChat()" title="Limpiar historial de chat" class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-white transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="hidden sm:inline">Limpiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Barra de Contexto Activo Conectado a Gemini -->
+                <div class="bg-slate-100/90 border-b border-gob-border px-4 py-2 flex items-center gap-2 overflow-x-auto">
+                    <span class="text-[11px] font-bold text-gob-navy whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-link text-emerald-600"></i>
+                        Contexto Activo (<span id="chatContextCount">0</span>):
+                    </span>
+                    <div id="chatContextChips" class="flex items-center gap-1.5 overflow-x-auto">
+                        <span class="text-[11px] text-slate-400 italic">Ningún documento seleccionado</span>
+                    </div>
+                </div>
+
+                <!-- Área de Mensajes del Chat -->
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/60">
+                    <!-- Mensaje Inicial Real (Sin datos ficticios) -->
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gob-navy text-gob-yellow flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                            <i class="fa-solid fa-landmark text-xs"></i>
+                        </div>
+                        <div class="bg-white border border-gob-border rounded-2xl rounded-tl-none p-4 shadow-2xs max-w-[90%] text-sm text-slate-700 leading-relaxed space-y-2">
+                            <p class="font-bold text-gob-navy">Asistente Inteligente del Ministerio de Gobierno — Listo para operar</p>
+                            <p class="text-xs sm:text-sm text-slate-600">
+                                Conectado directamente con la <strong>API oficial de Google Gemini</strong> para análisis documental individual o unificado:
+                            </p>
+                            <ol class="text-xs text-slate-600 list-decimal list-inside space-y-1">
+                                <li>Haga clic en <strong>"Configurar API"</strong> arriba e ingrese su clave de Google AI Studio (<code class="bg-slate-100 px-1 py-0.5 rounded text-gob-navy">AIzaSy...</code>).</li>
+                                <li>Cargue sus documentos reales (<strong>PDF, Word .docx, Excel .xlsx, CSV, texto o imágenes</strong>) en el panel izquierdo.</li>
+                                <li>Puede consultarlos directamente o pulsar <strong>"Unir Seleccionados"</strong> para consolidar un expediente maestro y analizarlo con Gemini.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción Rápida sobre los Documentos Cargados/Unificados -->
+                <div class="px-4 py-2 bg-white border-t border-slate-100 flex items-center gap-2 overflow-x-auto">
+                    <span class="text-[11px] font-semibold text-slate-400 whitespace-nowrap">Acciones:</span>
+                    <button onclick="sendQuickPrompt('Resumir expediente unificado: elabora una síntesis ejecutiva estructurada integrando todos los documentos activos.')" class="whitespace-nowrap px-3 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-gob-navy border border-slate-200 text-xs text-slate-700 transition">
+                        <i class="fa-solid fa-file-lines mr-1 text-gob-navy"></i> Resumir expediente unificado
+                    </button>
+                    <button onclick="sendQuickPrompt('Cruzar y comparar datos: identifica coincidencias, cifras, fechas, actores y relaciones entre los documentos cargados.')" class="whitespace-nowrap px-3 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-gob-navy border border-slate-200 text-xs text-slate-700 transition">
+                        <i class="fa-solid fa-code-compare mr-1 text-gob-navy"></i> Cruzar y comparar datos
+                    </button>
+                    <button onclick="sendQuickPrompt('Detectar inconsistencias o vacíos: revisa contradicciones normativas, fechas discordantes, datos faltantes o riesgos administrativos en los documentos.')" class="whitespace-nowrap px-3 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-gob-navy border border-slate-200 text-xs text-slate-700 transition">
+                        <i class="fa-solid fa-triangle-exclamation mr-1 text-gob-navy"></i> Detectar inconsistencias o vacíos
+                    </button>
+                    <button onclick="sendQuickPrompt('Redactar memorando / informe oficial del Ministerio de Gobierno fundamentado en los documentos activos, incluyendo antecedentes, análisis y recomendaciones.')" class="whitespace-nowrap px-3 py-1 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-gob-navy border border-slate-200 text-xs text-slate-700 transition">
+                        <i class="fa-solid fa-pen-nib mr-1 text-gob-navy"></i> Redactar memorando / informe oficial
+                    </button>
+                </div>
+
+                <!-- Caja de Entrada de Mensaje -->
+                <div class="p-4 bg-white border-t border-gob-border">
+                    <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex items-end gap-2.5">
+                        <div class="flex-1">
+                            <textarea id="userInput" rows="1" placeholder="Escriba su consulta para Google Gemini sobre los documentos activos..." class="w-full resize-none rounded-xl border border-slate-300 focus:border-gob-navy focus:ring-2 focus:ring-gob-navy/20 px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition max-h-28" onkeydown="handleEnterKey(event)"></textarea>
+                        </div>
+                        <button type="submit" id="sendBtn" class="px-4 py-2.5 rounded-xl bg-gob-navy hover:bg-gob-dark active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition flex items-center gap-2 flex-shrink-0">
+                            <span>Enviar</span>
+                            <i class="fa-solid fa-paper-plane text-xs text-gob-yellow"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Pie de Página Institucional -->
+    <footer class="bg-white border-t border-gob-border mt-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-gob-navy">Ministerio de Gobierno</span>
+                <span>•</span>
+                <span>República del Ecuador — El Nuevo Ecuador</span>
+            </div>
+            <div>
+                <span>Conectado directamente con Google Gemini API</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Configuración de Google Gemini API, Usuario y Logotipo PNG -->
+    <div id="apiModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gob-border max-w-lg w-full overflow-hidden">
+            <div class="bg-gob-navy text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-sliders text-gob-yellow"></i>
+                    <h3 class="text-base font-bold">Configuración Institucional y API Gemini</h3>
+                </div>
+                <button onclick="closeApiModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Pestañas del Modal -->
+            <div class="flex border-b border-slate-200 bg-slate-50 px-6 pt-2 gap-4 text-xs font-semibold">
+                <button type="button" id="tabBtnGemini" onclick="switchModalTab('gemini')" class="pb-2.5 border-b-2 border-gob-navy text-gob-navy">
+                    <i class="fa-solid fa-key mr-1"></i> API Google Gemini
+                </button>
+                <button type="button" id="tabBtnUser" onclick="switchModalTab('user')" class="pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-gob-navy">
+                    <i class="fa-solid fa-user mr-1"></i> Perfil Usuario
+                </button>
+                <button type="button" id="tabBtnLogo" onclick="switchModalTab('logo')" class="pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-gob-navy">
+                    <i class="fa-solid fa-image mr-1"></i> Logotipo PNG
+                </button>
+            </div>
+
+            <form onsubmit="saveAllSettings(event)" class="p-6 space-y-4 text-sm">
+                
+                <!-- PESTAÑA 1: GOOGLE GEMINI API -->
+                <div id="tabContentGemini" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Google Gemini API Key</label>
+                        <div class="relative">
+                            <input type="password" id="cfgGeminiKey" placeholder="AIzaSy..." class="w-full rounded-lg border border-slate-300 px-3.5 py-2 pr-10 text-xs font-mono text-slate-800 focus:border-gob-navy focus:ring-2 focus:ring-gob-navy/20 outline-none">
+                            <button type="button" onclick="toggleKeyVisibility()" class="absolute right-2.5 top-2 text-slate-400 hover:text-slate-700 text-xs">
+                                <i id="eyeIconKey" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1">Se guarda localmente en su navegador (<code class="bg-slate-100 px-1 rounded">localStorage</code>) y se envía únicamente a Google.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Modelo de Google Gemini</label>
+                        <select id="cfgGeminiModel" class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs font-medium text-slate-800 bg-white focus:border-gob-navy outline-none">
+                            <option value="gemini-2.5-flash">gemini-2.5-flash (Recomendado — Rápido y Multimodal)</option>
+                            <option value="gemini-2.5-pro">gemini-2.5-pro (Razonamiento Jurídico y Documental Avanzado)</option>
+                            <option value="gemini-2.0-flash">gemini-2.0-flash (Estable Estándar)</option>
+                        </select>
+                    </div>
+
+                    <!-- Prueba de Conexión en Vivo -->
+                    <div class="pt-1 flex items-center justify-between gap-3">
+                        <button type="button" id="btnTestGemini" onclick="testGeminiConnection()" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-gob-navy font-semibold text-xs border border-slate-300 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plug-circle-check"></i> Probar conexión con Gemini
+                        </button>
+                        <span id="testConnectionResult" class="text-xs font-medium text-slate-500"></span>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 2: PERFIL DE USUARIO -->
+                <div id="tabContentUser" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nombre Visible en Barra Superior</label>
+                        <input type="text" id="cfgUserName" value="Usuario" placeholder="Ej. Usuario" class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-slate-800 focus:border-gob-navy outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Cargo o Unidad Administrativa</label>
+                        <input type="text" id="cfgUserRole" value="Sesión Institucional Activa" placeholder="Ej. Dirección de Gestión Documental" class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-slate-800 focus:border-gob-navy outline-none">
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 3: LOGOTIPO PNG PERSONALIZADO -->
+                <div id="tabContentLogo" class="hidden space-y-4">
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        La cabecera ya incluye el logotipo vectorial oficial de <strong>El Nuevo Ecuador - Ministerio de Gobierno</strong>. Si desea utilizar su propio archivo PNG/SVG bitmap exacto, cárguelo aquí:
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <label class="cursor-pointer px-4 py-2 rounded-lg bg-gob-navy hover:bg-gob-dark text-white text-xs font-semibold transition inline-flex items-center gap-2">
+                            <i class="fa-solid fa-upload text-gob-yellow"></i> Subir archivo PNG / SVG
+                            <input type="file" id="logoUploadInput" class="hidden" accept="image/png,image/jpeg,image/svg+xml,image/webp" onchange="handleCustomLogoUpload(event)">
+                        </label>
+                        <button type="button" onclick="resetOfficialLogo()" class="px-3.5 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition">
+                            Restaurar logo vectorial oficial
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción Modal -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                    <button type="button" onclick="closeApiModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium text-xs transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-gob-navy hover:bg-gob-dark text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-gob-yellow"></i> Guardar Configuración
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Pegar Texto / Nota Rápida como Documento -->
+    <div id="noteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gob-border max-w-lg w-full overflow-hidden">
+            <div class="bg-gob-navy text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-file-pen text-gob-yellow"></i>
+                    <h3 class="text-base font-bold">Añadir Texto o Nota Documental</h3>
+                </div>
+                <button onclick="closeNoteModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="saveQuickNote(event)" class="p-6 space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Título del Documento o Memorando</label>
+                    <input type="text" id="noteTitle" required placeholder="Ej. Memorando_Nro_MDG_2026_015" class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-slate-800 focus:border-gob-navy outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Contenido Textual</label>
+                    <textarea id="noteBody" rows="6" required placeholder="Pegue aquí el texto del oficio, acuerdo ministerial, normativa o minuta..." class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs sm:text-sm text-slate-800 focus:border-gob-navy outline-none"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeNoteModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-xs font-medium hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-gob-navy text-white text-xs font-semibold hover:bg-gob-dark">Añadir al Repositorio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Vista Previa de Documento -->
+    <div id="previewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gob-border max-w-2xl w-full overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-gob-navy text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 truncate pr-4">
+                    <i class="fa-solid fa-file-shield text-gob-yellow"></i>
+                    <h3 id="previewDocTitle" class="text-sm font-bold truncate">Vista Previa</h3>
+                </div>
+                <button onclick="closePreviewModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-3 bg-slate-50 flex-1">
+                <div id="previewDocMeta" class="flex flex-wrap gap-3 text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-200"></div>
+                <div id="previewDocBody" class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs"></div>
+            </div>
+            <div class="px-6 py-3 bg-white border-t border-slate-200 flex justify-end">
+                <button onclick="closePreviewModal()" class="px-4 py-2 rounded-lg bg-gob-navy text-white text-xs font-semibold hover:bg-gob-dark transition">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Unificación de Documentos Seleccionados -->
+    <div id="unifyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gob-border max-w-3xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-gob-navy text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-object-group text-gob-yellow"></i>
+                    <div>
+                        <h3 class="text-base font-bold leading-tight">Unificar Documentos Seleccionados</h3>
+                        <p class="text-[11px] text-slate-300">Consolide múltiples fuentes en un único expediente maestro para Google Gemini</p>
+                    </div>
+                </div>
+                <button onclick="closeUnifyModal()" class="text-slate-300 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-4 text-sm flex-1 bg-slate-50/60">
+                <!-- Nombre y Opciones de Unificación -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nombre del Expediente Unificado</label>
+                        <input type="text" id="unifyDocName" value="Expediente_Unificado_Ministerio.txt" class="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-800 focus:border-gob-navy outline-none">
+                    </div>
+                    <div class="flex flex-col justify-center space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-700 font-medium">
+                            <input type="checkbox" id="unifyUncheckOriginals" checked class="w-4 h-4 rounded border-slate-300 text-gob-navy focus:ring-gob-navy">
+                            <span>Desmarcar documentos individuales al guardar (evita duplicados en Gemini)</span>
+                        </label>
+                        <div id="unifyStatsBadge" class="text-[11px] text-slate-500 font-medium"></div>
+                    </div>
+                </div>
+
+                <!-- Lista Reordenable de Documentos a Unir -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600">Orden de Consolidación (Subir / Bajar)</h4>
+                        <span class="text-[11px] text-slate-400">El orden define la secuencia del expediente</span>
+                    </div>
+                    <div id="unifyOrderList" class="space-y-1.5 max-h-44 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- Vista Previa del Documento Maestro Consolidado -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600">Vista Previa del Documento Maestro Consolidado</h4>
+                        <span id="unifyBinaryNotice" class="hidden text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            <i class="fa-solid fa-circle-info mr-1"></i> Incluye adjuntos PDF/Imagen que Gemini leerá de forma multimodal
+                        </span>
+                    </div>
+                    <pre id="unifyPreviewContent" class="whitespace-pre-wrap font-mono text-[11px] text-slate-700 bg-slate-50 p-3.5 rounded-lg border border-slate-200 max-h-52 overflow-y-auto leading-relaxed"></pre>
+                </div>
+            </div>
+
+            <!-- Botones de Acción de Unificación -->
+            <div class="px-6 py-4 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="downloadUnifiedFile('txt')" class="px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-arrow-down text-gob-navy"></i> Descargar .TXT
+                    </button>
+                    <button type="button" onclick="downloadUnifiedFile('md')" class="px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-brands fa-markdown text-gob-navy"></i> Descargar .MD
+                    </button>
+                    <button type="button" onclick="printUnifiedPdf()" class="px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-print text-red-600"></i> Imprimir / Guardar PDF
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeUnifyModal()" class="px-3.5 py-2 rounded-lg border border-slate-300 text-slate-700 text-xs font-medium hover:bg-slate-50">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="saveUnifiedDocumentToRepo()" class="px-4 py-2 rounded-lg bg-gob-navy hover:bg-gob-dark text-white text-xs font-semibold shadow-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-gob-yellow"></i> Guardar en Repositorio y Consultar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Notificaciones Toast -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <script>
+        // =========================================================================
+        // ESTADO REAL DE LA APLICACIÓN (0 DOCUMENTOS INICIALES, SIN MODO DEMO)
+        // =========================================================================
+        let documents = [];
+        let conversationHistory = [];
+        let unifyQueueIds = [];
+
+        let appSettings = {
+            apiKey: '',
+            model: 'gemini-2.5-flash',
+            userName: 'Usuario',
+            userRole: 'Sesión Institucional Activa',
+            customLogoDataUrl: ''
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            renderDocuments();
+            setupDragAndDrop();
+            updateDateDisplay();
+        });
+
+        function updateDateDisplay() {
+            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const str = new Date().toLocaleDateString('es-EC', opts);
+            document.getElementById('currentDateDisplay').textContent = str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // =========================================================================
+        // CARGA Y GESTIÓN DE ARCHIVOS REALES (MULTIMODAL: BASE64 Y TEXTO PLANO)
+        // =========================================================================
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-gob-navy', 'bg-indigo-50/60');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-gob-navy', 'bg-indigo-50/60');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-gob-navy', 'bg-indigo-50/60');
+                if (e.dataTransfer.files.length) handleRealFiles(e.dataTransfer.files);
+            });
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleRealFiles(e.target.files);
+                    fileInput.value = '';
+                }
+            });
+        }
+
+        function handleRealFiles(fileList) {
+            Array.from(fileList).forEach(file => {
+                const ext = file.name.split('.').pop().toUpperCase();
+                const sizeStr = formatBytes(file.size);
+                const dateStr = new Date().toLocaleDateString('es-EC');
+                const docId = 'doc-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
+
+                const isTextFile = ['TXT', 'CSV', 'MD', 'JSON'].includes(ext) || file.type.startsWith('text/');
+                const isDocxFile = ext === 'DOCX' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                const isExcelFile = ['XLSX', 'XLS'].includes(ext) || file.type.includes('spreadsheet') || file.type.includes('excel');
+                const isBinaryMultimodal = ext === 'PDF' || file.type === 'application/pdf' || file.type.startsWith('image/');
+
+                if (isTextFile) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        documents.unshift({
+                            id: docId,
+                            name: file.name,
+                            ext: ext,
+                            mimeType: file.type || 'text/plain',
+                            size: sizeStr,
+                            date: dateStr,
+                            selected: true,
+                            mode: 'text',
+                            isUnified: false,
+                            textContent: ev.target.result,
+                            base64Data: null,
+                            attachments: []
+                        });
+                        renderDocuments();
+                        showToast(`Archivo "${file.name}" indexado correctamente.`, 'success');
+                    };
+                    reader.readAsText(file);
+                } else if (isDocxFile) {
+                    if (typeof mammoth === 'undefined') {
+                        showToast('Librería Mammoth.js no disponible para leer .docx.', 'error');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        try {
+                            const result = await mammoth.extractRawText({ arrayBuffer: ev.target.result });
+                            const extracted = (result.value || '').trim();
+                            if (!extracted) throw new Error('El documento Word no contiene texto extraíble.');
+                            documents.unshift({
+                                id: docId,
+                                name: file.name,
+                                ext: 'DOCX',
+                                mimeType: file.type || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                size: sizeStr,
+                                date: dateStr,
+                                selected: true,
+                                mode: 'text',
+                                isUnified: false,
+                                textContent: extracted,
+                                base64Data: null,
+                                attachments: []
+                            });
+                            renderDocuments();
+                            showToast(`Documento Word "${file.name}" extraído y listo.`, 'success');
+                        } catch (err) {
+                            showToast(`Error leyendo "${file.name}": ${err.message}`, 'error');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (isExcelFile) {
+                    if (typeof XLSX === 'undefined') {
+                        showToast('Librería SheetJS no disponible para leer hojas de cálculo.', 'error');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        try {
+                            const workbook = XLSX.read(ev.target.result, { type: 'array' });
+                            let fullSheetText = [];
+                            workbook.SheetNames.forEach(sheetName => {
+                                const sheet = workbook.Sheets[sheetName];
+                                const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+                                if (csv.trim()) {
+                                    fullSheetText.push(`--- HOJA: ${sheetName} ---\n${csv.trim()}`);
+                                }
+                            });
+                            const combinedSheets = fullSheetText.join('\n\n');
+                            if (!combinedSheets) throw new Error('La hoja de cálculo está vacía.');
+                            documents.unshift({
+                                id: docId,
+                                name: file.name,
+                                ext: ext,
+                                mimeType: file.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                size: sizeStr,
+                                date: dateStr,
+                                selected: true,
+                                mode: 'text',
+                                isUnified: false,
+                                textContent: combinedSheets,
+                                base64Data: null,
+                                attachments: []
+                            });
+                            renderDocuments();
+                            showToast(`Hoja de cálculo "${file.name}" (${workbook.SheetNames.length} hoja/s) extraída.`, 'success');
+                        } catch (err) {
+                            showToast(`Error leyendo "${file.name}": ${err.message}`, 'error');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (isBinaryMultimodal) {
+                    if (file.size > 20 * 1024 * 1024) {
+                        showToast(`El archivo "${file.name}" supera el límite de 20 MB.`, 'error');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const dataUrl = ev.target.result;
+                        const base64Only = dataUrl.split(',')[1];
+                        documents.unshift({
+                            id: docId,
+                            name: file.name,
+                            ext: ext,
+                            mimeType: file.type || (ext === 'PDF' ? 'application/pdf' : 'image/png'),
+                            size: sizeStr,
+                            date: dateStr,
+                            selected: true,
+                            mode: 'base64',
+                            isUnified: false,
+                            textContent: null,
+                            base64Data: base64Only,
+                            previewUrl: file.type.startsWith('image/') ? dataUrl : null,
+                            attachments: []
+                        });
+                        renderDocuments();
+                        showToast(`Archivo multimodal "${file.name}" listo para Gemini.`, 'success');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showToast(`Formato "${ext}" no soportado. Use PDF, DOCX, XLSX, CSV, TXT, MD, JSON o imágenes.`, 'error');
+                }
+            });
+        }
+
+        function saveQuickNote(e) {
+            e.preventDefault();
+            const title = document.getElementById('noteTitle').value.trim();
+            const body = document.getElementById('noteBody').value.trim();
+            if (!title || !body) return;
+
+            documents.unshift({
+                id: 'doc-' + Date.now(),
+                name: title.endsWith('.txt') ? title : `${title}.txt`,
+                ext: 'TXT',
+                mimeType: 'text/plain',
+                size: formatBytes(new Blob([body]).size),
+                date: new Date().toLocaleDateString('es-EC'),
+                selected: true,
+                mode: 'text',
+                isUnified: false,
+                textContent: body,
+                base64Data: null,
+                attachments: []
+            });
+
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteBody').value = '';
+            closeNoteModal();
+            renderDocuments();
+            showToast('Texto documental añadido al repositorio.', 'success');
+        }
+
+        function renderDocuments() {
+            const list = document.getElementById('documentsList');
+            const totalSpan = document.getElementById('totalDocsCount');
+            const activeSpan = document.getElementById('activeDocsCount');
+            const selectionControls = document.getElementById('selectionControls');
+            const btnUnify = document.getElementById('btnOpenUnify');
+            const btnUnifyText = document.getElementById('btnOpenUnifyText');
+
+            const selectedDocs = documents.filter(d => d.selected);
+            totalSpan.textContent = documents.length;
+            activeSpan.textContent = selectedDocs.length;
+
+            // Actualizar barra de contexto activo en el panel de Gemini
+            updateChatContextBar(selectedDocs);
+
+            // Actualizar botón "Unir Seleccionados"
+            if (selectedDocs.length >= 2) {
+                btnUnify.disabled = false;
+                btnUnifyText.textContent = `Unir Seleccionados (${selectedDocs.length} documentos)`;
+            } else {
+                btnUnify.disabled = true;
+                btnUnifyText.textContent = selectedDocs.length === 1
+                    ? 'Unir Seleccionados (marque al menos 1 más)'
+                    : 'Unir Seleccionados (marque 2 o más)';
+            }
+
+            if (documents.length === 0) {
+                selectionControls.classList.add('hidden');
+                list.innerHTML = `
+                    <div class="text-center py-9 px-4 border border-dashed border-slate-200 rounded-xl bg-slate-50/60">
+                        <i class="fa-regular fa-folder-open text-2xl text-slate-300 mb-2"></i>
+                        <p class="text-xs font-semibold text-slate-600">Repositorio vacío (0 documentos)</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Cargue archivos PDF, Word (.docx), Excel (.xlsx), texto o imágenes para consultarlos o unificarlos.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            selectionControls.classList.remove('hidden');
+            list.innerHTML = documents.map(doc => {
+                const badge = getFileBadge(doc);
+                const statusBadge = doc.isUnified
+                    ? `<span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-gob-navy text-gob-yellow">Expediente Unificado</span>`
+                    : (doc.mode === 'base64'
+                        ? `<span class="px-1.5 py-0.2 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">Multimodal Base64</span>`
+                        : `<span class="px-1.5 py-0.2 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Texto Extraído</span>`);
+
+                return `
+                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl border ${doc.selected ? 'border-gob-navy/45 bg-indigo-50/35' : 'border-slate-200 bg-white'} hover:border-gob-navy/60 transition">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <input type="checkbox" ${doc.selected ? 'checked' : ''} onchange="toggleDoc('${doc.id}')" class="w-4 h-4 rounded border-slate-300 text-gob-navy focus:ring-gob-navy cursor-pointer flex-shrink-0">
+                            <div class="w-9 h-9 rounded-lg ${badge.bg} ${badge.text} flex items-center justify-center flex-shrink-0">
+                                <i class="${badge.icon} text-base"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-xs font-semibold text-slate-800 truncate" title="${escapeHtml(doc.name)}">${escapeHtml(doc.name)}</p>
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-[11px] text-slate-500">
+                                    <span class="font-semibold text-slate-600">${doc.ext}</span>
+                                    <span>•</span>
+                                    <span>${doc.size}</span>
+                                    <span>•</span>
+                                    ${statusBadge}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            <button onclick="previewDoc('${doc.id}')" title="Vista previa" class="p-1.5 rounded-lg text-slate-400 hover:text-gob-navy hover:bg-slate-100 transition">
+                                <i class="fa-regular fa-eye text-xs"></i>
+                            </button>
+                            <button onclick="removeDoc('${doc.id}')" title="Eliminar" class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition">
+                                <i class="fa-regular fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateChatContextBar(selectedDocs) {
+            const countEl = document.getElementById('chatContextCount');
+            const chipsEl = document.getElementById('chatContextChips');
+            if (!countEl || !chipsEl) return;
+
+            countEl.textContent = selectedDocs.length;
+            if (selectedDocs.length === 0) {
+                chipsEl.innerHTML = `<span class="text-[11px] text-slate-400 italic">Ningún documento seleccionado</span>`;
+                return;
+            }
+
+            chipsEl.innerHTML = selectedDocs.map(d => {
+                const isUni = d.isUnified;
+                return `
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap ${isUni ? 'bg-gob-navy text-white' : 'bg-white text-gob-navy border border-slate-200'}">
+                        <i class="fa-solid ${isUni ? 'fa-object-group text-gob-yellow' : 'fa-file-lines text-slate-400'} text-[10px]"></i>
+                        ${escapeHtml(d.name)}
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function getFileBadge(doc) {
+            if (doc.isUnified) return { icon: 'fa-solid fa-layer-group', bg: 'bg-gob-navy', text: 'text-gob-yellow' };
+            const ext = doc.ext;
+            if (ext === 'PDF') return { icon: 'fa-solid fa-file-pdf', bg: 'bg-red-50 border border-red-100', text: 'text-red-600' };
+            if (['DOCX', 'DOC'].includes(ext)) return { icon: 'fa-solid fa-file-word', bg: 'bg-blue-50 border border-blue-100', text: 'text-blue-700' };
+            if (['XLSX', 'XLS', 'CSV'].includes(ext)) return { icon: 'fa-solid fa-file-excel', bg: 'bg-emerald-50 border border-emerald-100', text: 'text-emerald-700' };
+            if (['PNG', 'JPG', 'JPEG', 'WEBP'].includes(ext)) return { icon: 'fa-solid fa-file-image', bg: 'bg-amber-50 border border-amber-100', text: 'text-amber-600' };
+            return { icon: 'fa-solid fa-file-lines', bg: 'bg-indigo-50 border border-indigo-100', text: 'text-gob-navy' };
+        }
+
+        function toggleDoc(id) {
+            const d = documents.find(x => x.id === id);
+            if (d) { d.selected = !d.selected; renderDocuments(); }
+        }
+
+        function setSelectionAll(state) {
+            documents.forEach(d => d.selected = state);
+            renderDocuments();
+        }
+
+        function removeDoc(id) {
+            documents = documents.filter(d => d.id !== id);
+            renderDocuments();
+            showToast('Documento eliminado del repositorio.', 'info');
+        }
+
+        function previewDoc(id) {
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+
+            document.getElementById('previewDocTitle').textContent = doc.name;
+            document.getElementById('previewDocMeta').innerHTML = `
+                <span><strong>Formato:</strong> ${doc.ext}</span>
+                <span>•</span>
+                <span><strong>Tamaño:</strong> ${doc.size}</span>
+                <span>•</span>
+                <span><strong>Fecha:</strong> ${doc.date}</span>
+            `;
+
+            const bodyEl = document.getElementById('previewDocBody');
+            if (doc.mode === 'text' || doc.isUnified) {
+                bodyEl.innerHTML = `<pre class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHtml(doc.textContent || '')}</pre>`;
+            } else if (doc.previewUrl) {
+                bodyEl.innerHTML = `<img src="${doc.previewUrl}" alt="${escapeHtml(doc.name)}" class="max-h-96 mx-auto rounded-lg shadow-xs">`;
+            } else {
+                bodyEl.innerHTML = `
+                    <div class="text-center py-6 space-y-2">
+                        <i class="fa-solid fa-file-pdf text-4xl text-red-600"></i>
+                        <p class="text-sm font-semibold text-slate-800">${escapeHtml(doc.name)}</p>
+                        <p class="text-xs text-slate-500">Documento PDF codificado en Base64 listo para lectura nativa por Google Gemini.</p>
+                    </div>
+                `;
+            }
+
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // =========================================================================
+        // MÓDULO DE UNIFICACIÓN DE DOCUMENTOS
+        // =========================================================================
+        function openUnifyModal() {
+            const selected = documents.filter(d => d.selected);
+            if (selected.length < 2) {
+                showToast('Seleccione al menos 2 documentos para unificar.', 'error');
+                return;
+            }
+            unifyQueueIds = selected.map(d => d.id);
+            const dateTag = new Date().toISOString().slice(0, 10);
+            document.getElementById('unifyDocName').value = `Expediente_Unificado_Ministerio_${dateTag}.txt`;
+            renderUnifyModalState();
+
+            const modal = document.getElementById('unifyModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeUnifyModal() {
+            const modal = document.getElementById('unifyModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function moveUnifyItem(index, direction) {
+            const target = index + direction;
+            if (target < 0 || target >= unifyQueueIds.length) return;
+            const temp = unifyQueueIds[index];
+            unifyQueueIds[index] = unifyQueueIds[target];
+            unifyQueueIds[target] = temp;
+            renderUnifyModalState();
+        }
+
+        function buildUnifiedPayload() {
+            const orderedDocs = unifyQueueIds
+                .map(id => documents.find(d => d.id === id))
+                .filter(Boolean);
+
+            const title = (document.getElementById('unifyDocName').value.trim() || 'Expediente_Unificado_Ministerio.txt');
+            const headerBanner = [
+                `====================================================================`,
+                `MINISTERIO DE GOBIERNO - REPÚBLICA DEL ECUADOR (EL NUEVO ECUADOR)`,
+                `EXPEDIENTE DOCUMENTAL UNIFICADO: ${title}`,
+                `FECHA DE CONSOLIDACIÓN: ${new Date().toLocaleString('es-EC')}`,
+                `TOTAL DE DOCUMENTOS INTEGRADOS: ${orderedDocs.length}`,
+                `====================================================================\n`
+            ].join('\n');
+
+            let sections = [];
+            let binaryAttachments = [];
+
+            orderedDocs.forEach((doc, idx) => {
+                const num = idx + 1;
+                if (doc.mode === 'text' && doc.textContent) {
+                    sections.push(
+                        `=== DOCUMENTO ${num}: ${doc.name} (${doc.ext} | ${doc.size}) ===\n` +
+                        `${doc.textContent.trim()}\n` +
+                        `=== FIN DOCUMENTO ${num}: ${doc.name} ===`
+                    );
+                } else if (doc.mode === 'base64' && doc.base64Data) {
+                    sections.push(
+                        `=== DOCUMENTO ${num}: ${doc.name} (${doc.ext} | ${doc.size}) ===\n` +
+                        `[Archivo binario multimodal (${doc.mimeType}) adjunto al expediente unificado para análisis visual/OCR directo por Google Gemini]\n` +
+                        `=== FIN DOCUMENTO ${num}: ${doc.name} ===`
+                    );
+                    binaryAttachments.push({
+                        name: doc.name,
+                        mimeType: doc.mimeType,
+                        base64Data: doc.base64Data
+                    });
+                } else if (doc.isUnified && doc.attachments?.length) {
+                    sections.push(
+                        `=== DOCUMENTO ${num}: ${doc.name} ===\n` +
+                        `${(doc.textContent || '').trim()}\n` +
+                        `=== FIN DOCUMENTO ${num}: ${doc.name} ===`
+                    );
+                    binaryAttachments.push(...doc.attachments);
+                }
+            });
+
+            const consolidatedText = headerBanner + sections.join('\n\n');
+            return { title, orderedDocs, consolidatedText, binaryAttachments };
+        }
+
+        function renderUnifyModalState() {
+            const { orderedDocs, consolidatedText, binaryAttachments } = buildUnifiedPayload();
+
+            // 1. Lista reordenable
+            const orderListEl = document.getElementById('unifyOrderList');
+            orderListEl.innerHTML = orderedDocs.map((doc, idx) => `
+                <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-5 h-5 rounded-full bg-gob-navy text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">${idx + 1}</span>
+                        <span class="font-semibold text-slate-800 truncate">${escapeHtml(doc.name)}</span>
+                        <span class="text-[10px] text-slate-500 flex-shrink-0">(${doc.ext} • ${doc.size})</span>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <button type="button" onclick="moveUnifyItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Subir orden" class="p-1 rounded hover:bg-slate-200 disabled:opacity-30 text-slate-600">
+                            <i class="fa-solid fa-arrow-up text-[11px]"></i>
+                        </button>
+                        <button type="button" onclick="moveUnifyItem(${idx}, 1)" ${idx === orderedDocs.length - 1 ? 'disabled' : ''} title="Bajar orden" class="p-1 rounded hover:bg-slate-200 disabled:opacity-30 text-slate-600">
+                            <i class="fa-solid fa-arrow-down text-[11px]"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 2. Vista previa y estadísticas
+            document.getElementById('unifyPreviewContent').textContent = consolidatedText;
+            const words = consolidatedText.trim().split(/\s+/).filter(Boolean).length;
+            const chars = consolidatedText.length;
+            document.getElementById('unifyStatsBadge').textContent =
+                `Consolidado: ${words.toLocaleString('es-EC')} palabras • ${chars.toLocaleString('es-EC')} caracteres` +
+                (binaryAttachments.length ? ` • ${binaryAttachments.length} adjunto(s) PDF/IMG` : '');
+
+            const binNotice = document.getElementById('unifyBinaryNotice');
+            if (binaryAttachments.length > 0) {
+                binNotice.classList.remove('hidden');
+            } else {
+                binNotice.classList.add('hidden');
+            }
+        }
+
+        function saveUnifiedDocumentToRepo() {
+            const { title, consolidatedText, binaryAttachments } = buildUnifiedPayload();
+            const uncheckOriginals = document.getElementById('unifyUncheckOriginals').checked;
+
+            if (uncheckOriginals) {
+                documents.forEach(d => d.selected = false);
+            }
+
+            const finalName = /\.(txt|md)$/i.test(title) ? title : `${title}.txt`;
+            const byteSize = new Blob([consolidatedText]).size;
+
+            documents.unshift({
+                id: 'doc-unified-' + Date.now(),
+                name: finalName,
+                ext: 'UNIFICADO',
+                mimeType: 'text/plain',
+                size: formatBytes(byteSize),
+                date: new Date().toLocaleDateString('es-EC'),
+                selected: true,
+                mode: 'text',
+                isUnified: true,
+                textContent: consolidatedText,
+                base64Data: null,
+                attachments: binaryAttachments
+            });
+
+            closeUnifyModal();
+            renderDocuments();
+            showToast(`Expediente unificado "${finalName}" guardado y activo para Gemini.`, 'success');
+        }
+
+        function downloadUnifiedFile(extType) {
+            const { title, consolidatedText } = buildUnifiedPayload();
+            const baseName = title.replace(/\.(txt|md|pdf)$/i, '');
+            const fileName = `${baseName}.${extType}`;
+            const mime = extType === 'md' ? 'text/markdown;charset=utf-8' : 'text/plain;charset=utf-8';
+
+            const blob = new Blob([consolidatedText], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Archivo "${fileName}" descargado.`, 'success');
+        }
+
+        function printUnifiedPdf() {
+            const { title, consolidatedText } = buildUnifiedPayload();
+            const printWin = window.open('', '_blank', 'width=900,height=700');
+            if (!printWin) {
+                showToast('Permita las ventanas emergentes para imprimir o guardar como PDF.', 'error');
+                return;
+            }
+            printWin.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${escapeHtml(title)}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 32px; color: #1e293b; line-height: 1.5; }
+                        .header { border-bottom: 3px solid #262262; padding-bottom: 12px; margin-bottom: 20px; }
+                        .header h1 { color: #262262; font-size: 18px; margin: 0 0 4px 0; }
+                        .header p { color: #64748b; font-size: 12px; margin: 0; }
+                        pre { white-space: pre-wrap; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>MINISTERIO DE GOBIERNO — REPÚBLICA DEL ECUADOR</h1>
+                        <p>Expediente Documental Consolidado: ${escapeHtml(title)}</p>
+                    </div>
+                    <pre>${escapeHtml(consolidatedText)}</pre>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => { printWin.print(); }, 250);
+        }
+
+        // =========================================================================
+        // CONEXIÓN DIRECTA Y MULTIMODAL CON GOOGLE GEMINI API
+        // =========================================================================
+        function handleEnterKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage(e);
+            }
+        }
+
+        function sendQuickPrompt(promptText) {
+            document.getElementById('userInput').value = promptText;
+            handleSendMessage(new Event('submit'));
+        }
+
+        async function handleSendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('userInput');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            if (!appSettings.apiKey) {
+                showToast('Configure primero su Google Gemini API Key.', 'error');
+                openApiModal('gemini');
+                return;
+            }
+
+            input.value = '';
+            appendUserMessage(userText);
+
+            const activeDocs = documents.filter(d => d.selected);
+            const typingId = appendTypingIndicator();
+
+            try {
+                const reply = await queryGoogleGeminiMultimodal(userText, activeDocs);
+                removeTypingIndicator(typingId);
+                appendAssistantMessage(reply, activeDocs.map(d => d.name));
+            } catch (err) {
+                removeTypingIndicator(typingId);
+                appendAssistantMessage(`⚠️ **Error al consultar Google Gemini API:**\n${err.message}\n\nVerifique que su API Key sea válida y tenga acceso al modelo **${appSettings.model}**.`, []);
+            }
+        }
+
+        async function queryGoogleGeminiMultimodal(userPrompt, activeDocs) {
+            const model = appSettings.model || 'gemini-2.5-flash';
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(appSettings.apiKey)}`;
+
+            // Construir partes multimodales (Texto extraído + inlineData Base64 + adjuntos de expedientes unificados)
+            const currentParts = [];
+
+            activeDocs.forEach(doc => {
+                if (doc.mode === 'text' && doc.textContent) {
+                    currentParts.push({
+                        text: `=== FUENTE DOCUMENTAL: ${doc.name} ===\n${doc.textContent}\n=== FIN FUENTE: ${doc.name} ===`
+                    });
+                }
+                if (doc.mode === 'base64' && doc.base64Data) {
+                    currentParts.push({
+                        text: `[Documento multimodal adjunto: ${doc.name}]`
+                    });
+                    currentParts.push({
+                        inlineData: {
+                            mimeType: doc.mimeType,
+                            data: doc.base64Data
+                        }
+                    });
+                }
+                if (doc.isUnified && Array.isArray(doc.attachments) && doc.attachments.length > 0) {
+                    doc.attachments.forEach(att => {
+                        currentParts.push({
+                            text: `[Adjunto multimodal incluido en expediente ${doc.name}: ${att.name}]`
+                        });
+                        currentParts.push({
+                            inlineData: {
+                                mimeType: att.mimeType,
+                                data: att.base64Data
+                            }
+                        });
+                    });
+                }
+            });
+
+            currentParts.push({ text: userPrompt });
+
+            const payload = {
+                systemInstruction: {
+                    parts: [{
+                        text: `Eres el Asistente Inteligente Oficial del Ministerio de Gobierno de la República del Ecuador ("El Nuevo Ecuador"). Responde en español con rigor jurídico-administrativo, precisión y claridad. Fundamenta tus respuestas estrictamente en los documentos cargados o en el expediente unificado proporcionado, citando explícitamente el nombre del documento fuente (por ejemplo: [Fuente: nombre_archivo]). Si la información solicitada no consta en los documentos activos, indícalo con transparencia.`
+                    }]
+                },
+                contents: [
+                    ...conversationHistory,
+                    { role: 'user', parts: currentParts }
+                ],
+                generationConfig: {
+                    temperature: 0.2
+                }
+            };
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const apiMsg = data?.error?.message || `Código HTTP ${response.status}`;
+                throw new Error(apiMsg);
+            }
+
+            const candidateText = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('\n').trim();
+            if (!candidateText) {
+                throw new Error('Google Gemini no devolvió contenido textual en la respuesta.');
+            }
+
+            // Guardar turno textual en historial para continuidad conversacional
+            conversationHistory.push({ role: 'user', parts: [{ text: userPrompt }] });
+            conversationHistory.push({ role: 'model', parts: [{ text: candidateText }] });
+            if (conversationHistory.length > 12) {
+                conversationHistory = conversationHistory.slice(-12);
+            }
+
+            return candidateText;
+        }
+
+        async function testGeminiConnection() {
+            const keyVal = document.getElementById('cfgGeminiKey').value.trim();
+            const modelVal = document.getElementById('cfgGeminiModel').value;
+            const resEl = document.getElementById('testConnectionResult');
+
+            if (!keyVal) {
+                resEl.className = 'text-xs font-semibold text-red-600';
+                resEl.textContent = 'Ingrese una API Key primero.';
+                return;
+            }
+
+            resEl.className = 'text-xs font-medium text-slate-500';
+            resEl.textContent = 'Verificando con Google...';
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelVal)}:generateContent?key=${encodeURIComponent(keyVal)}`;
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: 'Responde únicamente: OK' }] }]
+                    })
+                });
+                const json = await resp.json();
+                if (!resp.ok) throw new Error(json?.error?.message || `Error ${resp.status}`);
+
+                resEl.className = 'text-xs font-bold text-emerald-600';
+                resEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Conexión exitosa';
+            } catch (err) {
+                resEl.className = 'text-xs font-semibold text-red-600';
+                resEl.textContent = 'Error: ' + err.message.slice(0, 45);
+            }
+        }
+
+        // =========================================================================
+        // RENDERIZADO DE MENSAJES EN EL CHAT
+        // =========================================================================
+        function appendUserMessage(text) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'flex items-start justify-end gap-3';
+            div.innerHTML = `
+                <div class="bg-gob-navy text-white rounded-2xl rounded-tr-none px-4 py-3 shadow-2xs max-w-[85%] text-xs sm:text-sm leading-relaxed">
+                    <p class="whitespace-pre-wrap">${escapeHtml(text)}</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gob-yellow text-gob-navy font-bold flex items-center justify-center flex-shrink-0 mt-0.5 text-xs shadow-2xs">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendAssistantMessage(markdownText, citedDocs = []) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'flex items-start gap-3';
+
+            let formatted = escapeHtml(markdownText)
+                .replace(/^### (.*$)/gim, '<h4 class="font-bold text-gob-navy text-sm mt-2 mb-1">$1</h4>')
+                .replace(/^## (.*$)/gim, '<h3 class="font-bold text-gob-navy text-base mt-2 mb-1">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-slate-900">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+
+            const citationsHtml = citedDocs.length > 0
+                ? `<div class="flex flex-wrap items-center gap-1.5 pt-2 mt-2 border-t border-slate-100">
+                     <span class="text-[10px] font-semibold text-slate-400">Contexto consultado:</span>
+                     ${citedDocs.map(n => `<span class="px-2 py-0.5 rounded bg-slate-100 text-gob-navy text-[10px] font-medium border border-slate-200"><i class="fa-solid fa-paperclip mr-1 text-[9px]"></i>${escapeHtml(n)}</span>`).join('')}
+                   </div>`
+                : '';
+
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-lg bg-gob-navy text-gob-yellow flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                    <i class="fa-solid fa-landmark text-xs"></i>
+                </div>
+                <div class="bg-white border border-gob-border rounded-2xl rounded-tl-none p-4 shadow-2xs max-w-[90%] text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    <div class="whitespace-pre-wrap">${formatted}</div>
+                    ${citationsHtml}
+                    <div class="pt-2 mt-2 border-t border-slate-100 flex justify-end">
+                        <button onclick="copyResponse(this)" data-raw="${escapeHtml(markdownText)}" class="text-[11px] text-slate-400 hover:text-gob-navy flex items-center gap-1 transition">
+                            <i class="fa-regular fa-copy"></i> Copiar texto
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex items-start gap-3';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-lg bg-gob-navy text-gob-yellow flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fa-solid fa-landmark text-xs"></i>
+                </div>
+                <div class="bg-white border border-gob-border rounded-2xl rounded-tl-none px-4 py-3 shadow-2xs flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-gob-navy typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-gob-navy typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-gob-navy typing-dot"></span>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function clearChat() {
+            conversationHistory = [];
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gob-navy text-gob-yellow flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                        <i class="fa-solid fa-landmark text-xs"></i>
+                    </div>
+                    <div class="bg-white border border-gob-border rounded-2xl rounded-tl-none p-4 shadow-2xs max-w-[90%] text-xs sm:text-sm text-slate-700">
+                        <p class="font-bold text-gob-navy">Conversación reiniciada.</p>
+                        <p class="text-slate-600 mt-1">Los documentos seleccionados en el panel izquierdo continúan activos para sus consultas a Google Gemini.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportChatReport() {
+            if (conversationHistory.length === 0) {
+                showToast('No hay consultas en el historial para exportar.', 'info');
+                return;
+            }
+            const activeNames = documents.filter(d => d.selected).map(d => d.name).join(', ') || 'Ninguno';
+            let lines = [
+                'MINISTERIO DE GOBIERNO - REPÚBLICA DEL ECUADOR (EL NUEVO ECUADOR)',
+                'INFORME DE CONSULTAS DOCUMENTALES - ASISTENTE GOOGLE GEMINI',
+                `Fecha de exportación: ${new Date().toLocaleString('es-EC')}`,
+                `Usuario: ${appSettings.userName} (${appSettings.userRole})`,
+                `Documentos en contexto: ${activeNames}`,
+                '====================================================================\n'
+            ];
+
+            conversationHistory.forEach((turn, idx) => {
+                const who = turn.role === 'user' ? 'USUARIO' : 'ASISTENTE GEMINI';
+                const txt = turn.parts.map(p => p.text || '').join('\n');
+                lines.push(`[${idx + 1}] ${who}:\n${txt}\n--------------------------------------------------------------------`);
+            });
+
+            const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Informe_Consultas_Ministerio_${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Informe de consultas exportado.', 'success');
+        }
+
+        // =========================================================================
+        // GESTIÓN DE CONFIGURACIÓN, LOGOTIPO PERSONALIZADO Y DESCARGA PARA GITHUB
+        // =========================================================================
+        function loadSettings() {
+            try {
+                const raw = localStorage.getItem('mdg_ec_gemini_settings');
+                if (raw) appSettings = { ...appSettings, ...JSON.parse(raw) };
+            } catch (e) { console.warn(e); }
+            applySettingsToUI();
+        }
+
+        function applySettingsToUI() {
+            document.getElementById('displayUserName').textContent = appSettings.userName || 'Usuario';
+            document.getElementById('displayUserRole').textContent = appSettings.userRole || 'Sesión Institucional Activa';
+            document.getElementById('cfgUserName').value = appSettings.userName || 'Usuario';
+            document.getElementById('cfgUserRole').value = appSettings.userRole || 'Sesión Institucional Activa';
+            document.getElementById('cfgGeminiKey').value = appSettings.apiKey || '';
+            document.getElementById('cfgGeminiModel').value = appSettings.model || 'gemini-2.5-flash';
+            document.getElementById('quickModelSelect').value = appSettings.model || 'gemini-2.5-flash';
+
+            // Logotipo oficial SVG vs PNG personalizado
+            const customImg = document.getElementById('customLogoImg');
+            const vectorSvg = document.getElementById('officialVectorLogo');
+            if (appSettings.customLogoDataUrl) {
+                customImg.src = appSettings.customLogoDataUrl;
+                customImg.classList.remove('hidden');
+                vectorSvg.classList.add('hidden');
+            } else {
+                customImg.classList.add('hidden');
+                vectorSvg.classList.remove('hidden');
+            }
+
+            // Estado de conexión Gemini
+            const dot = document.getElementById('headerGeminiDot');
+            const txt = document.getElementById('headerGeminiText');
+            const chatDot = document.getElementById('chatHeaderDot');
+            const chatSub = document.getElementById('chatSubtitleStatus');
+
+            if (appSettings.apiKey) {
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse-dot';
+                txt.textContent = `Gemini Conectado (${appSettings.model})`;
+                chatDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-gob-navy';
+                chatSub.textContent = `Conectado directamente • Modelo ${appSettings.model}`;
+            } else {
+                dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+                txt.textContent = 'API No Configurada';
+                chatDot.className = 'absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-gob-navy';
+                chatSub.textContent = 'Configure su API Key de Gemini para iniciar consultas';
+            }
+        }
+
+        function syncQuickModel() {
+            appSettings.model = document.getElementById('quickModelSelect').value;
+            document.getElementById('cfgGeminiModel').value = appSettings.model;
+            try { localStorage.setItem('mdg_ec_gemini_settings', JSON.stringify(appSettings)); } catch (e) {}
+            applySettingsToUI();
+        }
+
+        function saveAllSettings(e) {
+            e.preventDefault();
+            appSettings.apiKey = document.getElementById('cfgGeminiKey').value.trim();
+            appSettings.model = document.getElementById('cfgGeminiModel').value;
+            appSettings.userName = document.getElementById('cfgUserName').value.trim() || 'Usuario';
+            appSettings.userRole = document.getElementById('cfgUserRole').value.trim() || 'Sesión Institucional Activa';
+
+            try {
+                localStorage.setItem('mdg_ec_gemini_settings', JSON.stringify(appSettings));
+            } catch (err) { console.warn(err); }
+
+            applySettingsToUI();
+            closeApiModal();
+            showToast('Configuración guardada correctamente.', 'success');
+        }
+
+        function handleCustomLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                appSettings.customLogoDataUrl = ev.target.result;
+                try { localStorage.setItem('mdg_ec_gemini_settings', JSON.stringify(appSettings)); } catch (err) {}
+                applySettingsToUI();
+                showToast('Logotipo personalizado aplicado en la cabecera.', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetOfficialLogo() {
+            appSettings.customLogoDataUrl = '';
+            try { localStorage.setItem('mdg_ec_gemini_settings', JSON.stringify(appSettings)); } catch (err) {}
+            applySettingsToUI();
+            showToast('Logotipo vectorial oficial restaurado.', 'info');
+        }
+
+        function downloadStandaloneHtml() {
+            const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Archivo "index.html" descargado. Súbelo directamente a tu repositorio GitHub.', 'success');
+        }
+
+        // =========================================================================
+        // CONTROLES DE MODALES Y UTILIDADES
+        // =========================================================================
+        function openApiModal(tab = 'gemini') {
+            switchModalTab(tab);
+            document.getElementById('testConnectionResult').textContent = '';
+            const modal = document.getElementById('apiModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeApiModal() {
+            const modal = document.getElementById('apiModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function switchModalTab(tab) {
+            ['gemini', 'user', 'logo'].forEach(t => {
+                const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (t === tab) {
+                    btn.className = 'pb-2.5 border-b-2 border-gob-navy text-gob-navy';
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = 'pb-2.5 border-b-2 border-transparent text-slate-500 hover:text-gob-navy';
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleKeyVisibility() {
+            const inp = document.getElementById('cfgGeminiKey');
+            const icon = document.getElementById('eyeIconKey');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                inp.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        function openNoteModal() {
+            const modal = document.getElementById('noteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeNoteModal() {
+            const modal = document.getElementById('noteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copyResponse(btn) {
+            const raw = btn.getAttribute('data-raw');
+            const ta = document.createElement('textarea');
+            ta.value = raw;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast('Respuesta copiada al portapapeles.', 'success');
+            } catch (e) {
+                showToast('No se pudo copiar.', 'error');
+            }
+            document.body.removeChild(ta);
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const borderCol = type === 'success' ? 'border-gob-yellow' : (type === 'error' ? 'border-red-500' : 'border-blue-400');
+            const iconCol = type === 'success' ? 'fa-circle-check text-gob-yellow' : (type === 'error' ? 'fa-circle-exclamation text-red-400' : 'fa-circle-info text-blue-300');
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gob-navy text-white text-xs font-medium shadow-lg border-l-4 ${borderCol} transition-all duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${iconCol}"></i><span>${escapeHtml(msg)}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
